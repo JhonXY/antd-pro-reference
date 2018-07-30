@@ -60,7 +60,7 @@ const getBreadcrumbNameMap = (menuData, routerData) => {
     }
   }
   let res = Object.assign({}, routerData, result, childResult);
-  console.log(res);
+  // console.log(res);
   
   return res
 };
@@ -107,12 +107,12 @@ class BasicLayout extends React.PureComponent {
 
   getChildContext() {
     const { location, routerData } = this.props;
-    console.log(this.props)
+    // console.log(this.props)
     let res = {
       location,
       breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
     };
-    console.log(res)
+    // console.log(res)
     return res
   }
 

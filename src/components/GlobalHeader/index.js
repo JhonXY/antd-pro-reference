@@ -159,7 +159,9 @@ export default class GlobalHeader extends PureComponent {
               </span>
             </Dropdown>
           ) : (
+            // header加载时的loading效果
             <Spin size="small" style={{ marginLeft: 8 }} />
+            // <div>2222222222</div>
           )}
         </div>
       </div>

@@ -57,7 +57,9 @@ export default class PromiseRender extends React.PureComponent {
           textAlign: 'center',
         }}
       >
-        <Spin size="large" />
+      {/* 这里给监控页做了动态处理 */}
+        {/* <Spin size="large" /> */}
+        <div>1111111111111</div>
       </div>
     );
   }

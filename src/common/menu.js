@@ -155,6 +155,10 @@ const menuData = [
       },
     ],
   },
+  {
+    name: 'lifeCycle',
+    path: 'life-cycle'
+  }
 ];
 
 // 返回一个路由表对应的path为地址的路由映射表

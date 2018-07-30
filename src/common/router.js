@@ -13,6 +13,7 @@ const modelNotExisted = (app, model) =>
   });
 
 // wrapper of dynamic
+// 对组件懒加载的处理
 const dynamicWrapper = (app, models, component) => {
   // register models
   models.forEach(model => {
@@ -26,6 +27,7 @@ const dynamicWrapper = (app, models, component) => {
   // transformed by babel-plugin-dynamic-import-node-sync
   if (component.toString().indexOf('.then(') < 0) {
     return props => {
+      // 对当前的路由信息进行缓存处理
       if (!routerDataCache) {
         routerDataCache = getRouterData(app);
       }
@@ -41,18 +43,23 @@ const dynamicWrapper = (app, models, component) => {
       if (!routerDataCache) {
         routerDataCache = getRouterData(app);
       }
+      // 因为import函数返回的是一个promise对象，
       return component().then(raw => {
+        // 这里无法执行到，无法理解
         const Component = raw.default || raw;
-        return props =>
+        return props => {
           createElement(Component, {
             ...props,
             routerData: routerDataCache,
           });
+        }
       });
     },
-    loading: () => {
-      return <Spin size="large" className="global-spin" />;
+    loading: (props) => {
+      // return <Spin size="large" className="global-spin" />;
+      return <div>loading</div>;
     },
+    delay: 10000,
   });
 };
 
@@ -71,6 +78,10 @@ function getFlatMenuData(menus) {
 
 export const getRouterData = app => {
   const routerConfig = {
+    // 使用动态加载组件的方式来动态加载路由，
+    // 并将() => require('')与 () => import('')分别处理，使用loadable做动态加载
+    // 所有路由相关的组件一律放置在routes文件夹下
+    // 第二个参数为会注入该路由的models
     '/': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
@@ -170,6 +181,9 @@ export const getRouterData = app => {
     '/user/register-result': {
       component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
     },
+    '/life-cycle': {
+      component: dynamicWrapper(app, ['testCycle'], () => import('../routes/testCycle'))
+    }
     // '/user/:id': {
     //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
     // },
