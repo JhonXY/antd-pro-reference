@@ -3,6 +3,7 @@ import React from 'react';
 import DrawerMenu from 'rc-drawer';
 import SiderMenu from './SiderMenu';
 
+// 如果是移动页面则做包裹处理
 const SiderMenuWrapper = props => {
   const { isMobile, collapsed } = props;
   return isMobile ? (
