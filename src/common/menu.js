@@ -139,7 +139,8 @@ const menuData = [
     name: '账户',
     icon: 'user',
     path: 'user',
-    authority: 'guest',
+    // 权限可设置为一个数组，或一个字符值，角色在这个数组中或等于这个值则获得权限
+    authority: ['guest', 'admin'],
     children: [
       {
         name: '登录',

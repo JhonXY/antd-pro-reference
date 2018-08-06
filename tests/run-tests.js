@@ -13,7 +13,7 @@ startServer.stderr.on('data', data => {
 });
 
 startServer.on('exit', () => {
-  kill(process.env.PORT || 8000);
+  kill(process.env.PORT || 8001);
 });
 
 // eslint-disable-next-line

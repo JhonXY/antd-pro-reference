@@ -52,8 +52,12 @@ export const getMenuMatchKeys = (flatMenuKeys, paths) =>
 export default class SiderMenu extends PureComponent {
   constructor(props) {
     super(props);
+    // 经过扁平处理的路由信息
     this.flatMenuKeys = getFlatMenuKeys(props.menuData);
     this.state = {
+      // 获取默认进入的路由，并按照路由结构保存openKeys数组
+      // 之后每次路由发生改变都会获取该openKeys
+      // /dashboard/analysis = > ['/dashboard','/dashboard/analysis']
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
   }
@@ -121,7 +125,11 @@ export default class SiderMenu extends PureComponent {
   /**
    * get SubMenu or Item
    */
+  // 用于生成submenu的结构，以及树末端的item
   getSubMenuOrItem = item => {
+    // 该路由名下有children且皆设置了name，不设置name会被过滤
+    // 具有有效children的路由会被生成为SubMenu的dom结构
+    // 路由嵌套多少层就会生成多少层的subMenu
     if (item.children && item.children.some(child => child.name)) {
       const childrenItems = this.getNavMenuItems(item.children);
       // 当无子菜单时就不展示菜单
@@ -146,6 +154,7 @@ export default class SiderMenu extends PureComponent {
       }
       return null;
     } else {
+      // 最终所有的路由树结构的末端都会生成该dom结构
       return <Menu.Item key={item.path}>{this.getMenuItemPath(item)}</Menu.Item>;
     }
   };
@@ -154,17 +163,23 @@ export default class SiderMenu extends PureComponent {
    * 获得菜单子节点
    * @memberof SiderMenu
    */
+  // 一旦该路由名下有children则会调用该函数做处理
+  // 直到生成无childen的Menu.Item
   getNavMenuItems = menusData => {
     if (!menusData) {
       return [];
     }
     return menusData
+      // 去除未设置name以及设置hideInMenu的路由信息
+      // 
       .filter(item => item.name && !item.hideInMenu)
       .map(item => {
-        // make dom
+        // 生成需要继续嵌套处理的submenu或者生成最重的menuitem
         const ItemDom = this.getSubMenuOrItem(item);
+        // 做权限检测
         return this.checkPermissionItem(item.authority, ItemDom);
       })
+      // 去除空值
       .filter(item => item);
   };
 
@@ -191,6 +206,8 @@ export default class SiderMenu extends PureComponent {
     const { Authorized } = this.props;
     if (Authorized && Authorized.check) {
       const { check } = Authorized;
+      // console.log(check(authority, ItemDom))
+      // 此处若权限验证成功，则发送一个jsx对象，验证未成功则返回undefined
       return check(authority, ItemDom);
     }
     return ItemDom;
