@@ -256,16 +256,22 @@ class BasicLayout extends React.PureComponent {
               {redirectData.map(item => (
                 <Redirect key={item.from} exact from={item.from} to={item.to} />
               ))}
-              {getRoutes(match.path, routerData).map(item => (
-                <AuthorizedRoute
-                  key={item.key}
-                  path={item.path}
-                  component={item.component}
-                  exact={item.exact}
-                  authority={item.authority}
-                  redirectPath="/exception/403"
-                />
-              ))}
+              {/* 每个路由都用AuthorizedRoute做包裹，实现权限验证 */}
+              {getRoutes(match.path, routerData).map(item => {
+                // 其中item.component是交给AuthorizedRoute做处理的Component
+                // 其余参数则是传给原生react-route-dom的Route组件的
+                // 原生route组件必备的参数为path和render，传参在AuthorizedRoute中有所体现
+                return (
+                  <AuthorizedRoute
+                    key={item.key}
+                    path={item.path}
+                    component={item.component}
+                    exact={item.exact}
+                    authority={item.authority}
+                    redirectPath="/exception/403"
+                  />
+                )
+              })}
               <Redirect exact from="/" to={bashRedirect} />
               <Route render={NotFound} />
             </Switch>

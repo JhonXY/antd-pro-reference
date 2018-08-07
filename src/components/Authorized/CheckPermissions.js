@@ -21,10 +21,12 @@ function isPromise(obj) {
 const checkPermissions = (authority, currentAuthority, target, Exception) => {
   // 没有判定权限.默认查看所有
   // Retirement authority, return target;
+  // 没有设置authority的路由默认所有角色可查看
   if (!authority) {
     return target;
   }
   // 数组处理
+  // authority值为数组时的判断操作
   if (Array.isArray(authority)) {
     if (authority.indexOf(currentAuthority) >= 0) {
       return target;
@@ -41,6 +43,7 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
   }
 
   // string 处理
+  // authority值为字符串时的判断操作
   if (typeof authority === 'string') {
     if (authority === currentAuthority) {
       return target;
@@ -83,6 +86,13 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
 export { checkPermissions };
 
 const check = (authority, target, Exception) => {
+  // authority为路由信息中对应路由设置的authority
+  // CURRENT默认为null，暂时看来是由localhost中的相应值决定的
+  // target为AuthorizedRoute中传入Authorized组件的children，用于符合权限时的route
+  // exception为AuthorizedRoute中传入Authorized组件的props中的nomatch，用于不符合权限时的route
+  // 该函数最终会返回按照CURRENT来判断是否符合权限值的结果
+  // 符合权限值返回target
+  // 不符合权限值返回Exception
   return checkPermissions(authority, CURRENT, target, Exception);
 };
 
