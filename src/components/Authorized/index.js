@@ -11,5 +11,5 @@ Authorized.AuthorizedRoute = AuthorizedRoute;
 Authorized.check = check;
 
 // renderAuthorize在此处获取到第一个参数即 Authorized 组件
-// 并且初始化了以供之后使用的常量 CURRENT 来方便得获取当前的权限名
+// 并且初始化了以供之后使用的常量 CURRENT 来获取当前的角色的权限值
 export default renderAuthorize(Authorized);
